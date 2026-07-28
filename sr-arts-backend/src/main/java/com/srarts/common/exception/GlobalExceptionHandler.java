@@ -1,0 +1,104 @@
+package com.srarts.common.exception;
+
+import com.srarts.common.constants.ErrorCode;
+import com.srarts.common.response.ApiError;
+import com.srarts.common.response.ApiResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleResourceNotFound(
+            ResourceNotFoundException exception) {
+
+        ApiError error = ApiError.builder()
+                .code(ErrorCode.RESOURCE_NOT_FOUND)
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ApiResponse.failure(
+                        exception.getMessage(),
+                        error
+                ));
+    }
+
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<ApiResponse<Void>> handleDuplicateResource(
+            DuplicateResourceException exception) {
+
+        ApiError error = ApiError.builder()
+                .code(ErrorCode.DUPLICATE_RESOURCE)
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ApiResponse.failure(
+                        exception.getMessage(),
+                        error
+                ));
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ApiResponse<Void>> handleBusinessException(
+            BusinessException exception) {
+
+        ApiError error = ApiError.builder()
+                .code(ErrorCode.BUSINESS_ERROR)
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.failure(
+                        exception.getMessage(),
+                        error
+                ));
+    }
+
+    @ExceptionHandler(
+            org.springframework.web.bind.MethodArgumentNotValidException.class
+    )
+    public ResponseEntity<ApiResponse<Void>> handleValidationException(
+            org.springframework.web.bind.MethodArgumentNotValidException exception) {
+
+        var errors = exception.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .collect(java.util.stream.Collectors.toMap(
+                        fieldError -> fieldError.getField(),
+                        fieldError -> fieldError.getDefaultMessage(),
+                        (existing, replacement) -> existing
+                ));
+
+        ApiError error = ApiError.builder()
+                .code(ErrorCode.VALIDATION_ERROR)
+                .details(errors)
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.failure(
+                        "Validation failed",
+                        error
+                ));
+    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse<Void>> handleUnexpectedException(
+            Exception exception) {
+
+        ApiError error = ApiError.builder()
+                .code(ErrorCode.INTERNAL_SERVER_ERROR)
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.failure(
+                        "An unexpected error occurred",
+                        error
+                ));
+    }
+}
