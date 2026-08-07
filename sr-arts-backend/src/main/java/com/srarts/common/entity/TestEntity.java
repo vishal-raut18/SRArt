@@ -1,4 +1,4 @@
-package com.srarts.common.entity;
-
-public class TestEntity {
-}
+//package com.srarts.common.entity;
+//
+//public class TestEntity {
+//}
