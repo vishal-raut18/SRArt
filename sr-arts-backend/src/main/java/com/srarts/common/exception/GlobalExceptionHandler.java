@@ -5,6 +5,7 @@ import com.srarts.common.response.ApiError;
 import com.srarts.common.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -98,6 +99,21 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ApiResponse.failure(
                         "An unexpected error occurred",
+                        error
+                ));
+    }
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ApiResponse<Void>> handleBadCredentials(
+            BadCredentialsException exception) {
+
+        ApiError error = ApiError.builder()
+                .code(ErrorCode.UNAUTHORIZED)
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(ApiResponse.failure(
+                        "Invalid username or password",
                         error
                 ));
     }

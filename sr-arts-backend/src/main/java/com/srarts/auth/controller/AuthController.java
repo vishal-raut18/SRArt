@@ -1,6 +1,8 @@
 package com.srarts.auth.controller;
 
+import com.srarts.auth.dto.request.LoginRequest;
 import com.srarts.auth.dto.request.RegisterRequest;
+import com.srarts.auth.dto.response.LoginResponse;
 import com.srarts.auth.dto.response.RegisterResponse;
 import com.srarts.auth.service.AuthService;
 import com.srarts.common.response.ApiResponse;
@@ -32,4 +34,20 @@ public class AuthController {
                         )
                 );
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<LoginResponse>> login(
+            @Valid @RequestBody LoginRequest request) {
+
+        LoginResponse response =
+                authService.login(request);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Login successful",
+                        response
+                )
+        );
+    }
+
 }
