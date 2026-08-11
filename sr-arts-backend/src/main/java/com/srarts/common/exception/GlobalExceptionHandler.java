@@ -172,4 +172,37 @@ public class GlobalExceptionHandler {
                         error
                 ));
     }
+    @ExceptionHandler(DuplicateProductException.class)
+    public ResponseEntity<ApiResponse<Void>> handleDuplicateProduct(
+            DuplicateProductException ex) {
+
+        ApiError error = ApiError.builder()
+                .code("DUPLICATE_PRODUCT")
+                .details(null)
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ApiResponse.failure(
+                        ex.getMessage(),
+                        error
+                ));
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleProductNotFound(
+            ProductNotFoundException ex) {
+
+        ApiError error = ApiError.builder()
+                .code("PRODUCT_NOT_FOUND")
+                .details(null)
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ApiResponse.failure(
+                        ex.getMessage(),
+                        error
+                ));
+    }
 }
