@@ -139,4 +139,37 @@ public class GlobalExceptionHandler {
                         error
                 ));
     }
+    @ExceptionHandler(DuplicateCategoryException.class)
+    public ResponseEntity<ApiResponse<Void>> handleDuplicateCategory(
+            DuplicateCategoryException ex) {
+
+        ApiError error = ApiError.builder()
+                .code("DUPLICATE_CATEGORY")
+                .details(null)
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ApiResponse.failure(
+                        ex.getMessage(),
+                        error
+                ));
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleCategoryNotFound(
+            CategoryNotFoundException ex) {
+
+        ApiError error = ApiError.builder()
+                .code("CATEGORY_NOT_FOUND")
+                .details(null)
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ApiResponse.failure(
+                        ex.getMessage(),
+                        error
+                ));
+    }
 }
