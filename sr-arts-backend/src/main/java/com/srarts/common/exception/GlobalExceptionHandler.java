@@ -205,4 +205,44 @@ public class GlobalExceptionHandler {
                         error
                 ));
     }
+    @ExceptionHandler(ProductImageNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleProductImageNotFound(
+            ProductImageNotFoundException exception) {
+
+        ApiError error = ApiError.builder()
+                .code("PRODUCT_IMAGE_NOT_FOUND")
+                .details(Map.of(
+                        "reason", exception.getMessage()
+                ))
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(
+                        ApiResponse.failure(
+                                "Product image not found.",
+                                error
+                        )
+                );
+    }
+    @ExceptionHandler(ProductImageLimitException.class)
+    public ResponseEntity<ApiResponse<Void>> handleProductImageLimit(
+            ProductImageLimitException exception) {
+
+        ApiError error = ApiError.builder()
+                .code("PRODUCT_IMAGE_LIMIT")
+                .details(Map.of(
+                        "reason", exception.getMessage()
+                ))
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(
+                        ApiResponse.failure(
+                                "Product image limit exceeded.",
+                                error
+                        )
+                );
+    }
 }
