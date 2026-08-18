@@ -245,4 +245,24 @@ public class GlobalExceptionHandler {
                         )
                 );
     }
+    @ExceptionHandler(ProductVariantNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleProductVariantNotFound(
+            ProductVariantNotFoundException exception) {
+
+        ApiError error = ApiError.builder()
+                .code("PRODUCT_VARIANT_NOT_FOUND")
+                .details(Map.of(
+                        "reason", exception.getMessage()
+                ))
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(
+                        ApiResponse.failure(
+                                "Product variant not found.",
+                                error
+                        )
+                );
+    }
 }
