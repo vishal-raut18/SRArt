@@ -265,4 +265,24 @@ public class GlobalExceptionHandler {
                         )
                 );
     }
+    @ExceptionHandler(InactiveResourceException.class)
+    public ResponseEntity<ApiResponse<Void>> handleInactiveResource(
+            InactiveResourceException exception) {
+
+        ApiError error = ApiError.builder()
+                .code("INACTIVE_RESOURCE")
+                .details(Map.of(
+                        "reason", exception.getMessage()
+                ))
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(
+                        ApiResponse.failure(
+                                "Inactive resource.",
+                                error
+                        )
+                );
+    }
 }
